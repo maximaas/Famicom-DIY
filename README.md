@@ -23,7 +23,17 @@ First, I purchased several RS232 female connectors, then cut the pin head of the
 
 The wiring method is showed above. The 2p controller has an additional mic wire than the 1p's. I don't know how to wire it so I left it lifted.
 
+![image](https://github.com/maximaas/Famicom-DIY/blob/master/pad/9pin_mod/04.jpg)
+
+Solder the corresponding wires, and assemble the connector.
+
+![image](https://github.com/maximaas/Famicom-DIY/blob/master/pad/9pin_mod/05.jpg)
+
+Enjoy!
+
 ## Reproductions
+
+Refer to [https://maximaas.github.io/blog](https://maximaas.github.io/blog) for details.
 
 *   kazzo_scripts: kazzo scripts for certain mappers that anago releases didn't provide or the original one doesn't work well.
 *   MMC1 - SLROM.txt: wiring instruction for mmc1 slrom.
