@@ -2,7 +2,9 @@
 
 My DIY work on Nintendo Famicom
 
-### Controllers
+## Controllers
+
+### Convert FC controllers to adapter to 9-pin socket
 
 ### Reproductions
 
