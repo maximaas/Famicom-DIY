@@ -16,9 +16,11 @@ One day a guy claimed that he had successfully designed and made a famiclone nam
 RGB-FC provides two 9-pin controller connectors, can be used with a large number of "Subor" pads. But the pads are sucks, so I have to mod my original controllers to adapt with RGB-FC. 
 
 ![image](https://github.com/maximaas/Famicom-DIY/blob/master/pad/9pin_mod/03.jpg)
+
 First, I purchased several RS232 female connectors, then cut the pin head of the controller and started to wire them together.
 
 ![image](https://github.com/maximaas/Famicom-DIY/blob/master/pad/9pin_mod/04.jpg)
+
 The wiring method is showed above. The 2p controller has an additional mic wire than the 1p's. I don't know how to wire it so I left it empty.
 
 ## Reproductions
