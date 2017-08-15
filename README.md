@@ -21,7 +21,7 @@ First, I purchased several RS232 female connectors, then cut the pin head of the
 
 ![image](https://github.com/maximaas/Famicom-DIY/blob/master/pad/9pin_mod/04.jpg)
 
-The wiring method is showed above. The 2p controller has an additional mic wire than the 1p's. I don't know how to wire it so I left it empty.
+The wiring method is showed above. The 2p controller has an additional mic wire than the 1p's. I don't know how to wire it so I left it lifted.
 
 ## Reproductions
 
