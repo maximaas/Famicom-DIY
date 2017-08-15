@@ -1,0 +1,78 @@
+/*
+iNES mapper #19
+
+Many cartridges uses epoxies for ROM, RAM and mapper. Few cartridges 
+uses discrete parts. Other functions are various though the memory 
+mapping is common. 
+
+The mistake of an old document is an etymology of 'namcot 106'. I have
+seen mapper IC with 163 (well known chip), 129, 175 and 340 for #19. 
+I have never seen labeled IC with '106'. 
+'106' is informal virtual name, and the relic of old emulators. 
+*/
+function cpu_dump(d, pagesize, banksize)
+{
+	for(local i = 0; i < pagesize - 1 ; i += 1){
+		cpu_write(d, 0xe000, i);
+		cpu_read(d, 0x8000, banksize);
+	}
+/*
+note: databus conficts on $c800-$dfff. ($c800-$dfff & $7fff) are internal RAM port....
+Unfortunately kazzo generates incomple read wave form. do not use $c800-$dfff.
+*/
+	cpu_read(d, 0xe000, banksize);
+}
+
+function ppu_dump(d, pagesize, banksize)
+{
+	cpu_write(d, 0xe800, 0xe0);
+	for(local i = 0; i < pagesize; i += 8){
+		local address = 0x8000;
+		for(local j = 0; j < 8; j++){
+			cpu_write(d, address, i | j);
+			address += 0x0800;
+		}
+		ppu_read(d, 0, banksize * 8);
+	}
+}
+
+function program_initalize(d, cpu_banksize, ppu_banksize)
+{
+	cpu_command(d, 0x0000, 0xa000, cpu_banksize);
+	cpu_command(d, 0x2aaa, 0x8000, cpu_banksize);
+	cpu_command(d, 0x5555, 0xa000, cpu_banksize);
+	cpu_write(d, 0xe000, 0x41);
+	cpu_write(d, 0xe800, 0xe2);
+
+	ppu_command(d, 0x0000, 0x0000, ppu_banksize);
+	ppu_command(d, 0x2aaa, 0x0400, ppu_banksize);
+	ppu_command(d, 0x5555, 0x0800, ppu_banksize);
+	cpu_write(d, 0x8000, 0x00);
+	cpu_write(d, 0x8800, 0x0a);
+	cpu_write(d, 0x9000, 0x15);
+	//map 0x2000-0x2fff is RAM
+	cpu_write(d, 0xc000, 0xe0);
+	cpu_write(d, 0xc800, 0xe0);
+	cpu_write(d, 0xd000, 0xe1);
+	cpu_write(d, 0xd800, 0xe1);
+}
+
+function cpu_transfer(d, start, end, cpu_banksize)
+{
+	for(local i = start; i < end - 1; i += 1){
+		cpu_write(d, 0xf000, i | 0xe0);
+		cpu_program(d, 0xc000, cpu_banksize);
+	}
+	cpu_program(d, 0xe000, cpu_banksize)
+}
+
+function ppu_transfer(d, start, end, ppu_banksize)
+{
+	for(local i = start; i < end; i += 4){
+		cpu_write(d, 0xa000, i);
+		cpu_write(d, 0xa800, i | 1);
+		cpu_write(d, 0xb000, i | 2);
+		cpu_write(d, 0xb800, i | 3);
+		ppu_program(d, 0x1000, ppu_banksize * 4);
+	}
+}
