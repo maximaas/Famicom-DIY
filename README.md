@@ -25,7 +25,7 @@ The wiring method is showed above. The 2p controller has an additional mic wire 
 
 ## Reproductions
 
-*   kazzo_scripts: kazzo scripts for certain mappers that anago releases didn't provide or the original one doesn't function well.
+*   kazzo_scripts: kazzo scripts for certain mappers that anago releases didn't provide or the original one doesn't work well.
 *   MMC1 - SLROM.txt: wiring instruction for mmc1 slrom.
 *   MMC5 - ETROM.txt: wiring instruction for mmc5 etrom.
 *   Namcot-163.txt: wiring instruction for Namcot-163 board.
