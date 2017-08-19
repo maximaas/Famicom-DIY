@@ -1,0 +1,47 @@
+MMC3
+HVC-TKROM
+
+512KBytes - MX29F004  		      PRG MASK ROM                          512KBytes as PRG				                                                  Famicom Cartridge Connector               Taito X1-005 (Mapper 80)
+--------------------------      -------------------------------       ----------------------------------                                        ----------------------------              -------------------------------------------                                         
+                                                                                                                                                                                          
+        ---_---                                                                    ---_---                                                               +-------+                                       .---\/---.                 
+ A18 - |01   32| - Vdd                                                      +5v - |01   32| - +5v                                                    GND |01   31| +5V                             NC -- |01    48| -- VCC            
+ A16 - |02   31| - WE#                     ---_---                    PRG 24pin - |02   31| - CONN 14pin                                         CPU A11 |02   32| CPU ¦Õ2 /M2                 (f)  M2 -> |02    47| -> PRG A17 (r)  
+ A15 - |03   30| - A17          PRG A15 - |01   28| - VCC                       - |03   30| - X1-005 47pin                                       CPU A10 |03   33| CPU A12               (fr) CPU A12 -> |03    46| -> PRG A15 (r)   
+ A12 - |04   29| - A14          PRG A12 - |02   27| - PRG A14                   - |04   29| -                74HC00                               CPU A9 |04   34| CPU A13                (f) CPU A13 -> |04    45| -> PRG A14 (r)    
+ A7  - |05   28| - A13          PRG A7  - |03   26| - PRG A13                   - |05   28| -                ----------------------------         CPU A8 |05   35| CPU A14                (f) CPU A14 -> |05    44| -> PRG A13 (r)    
+ A6  - |06   27| - A8           PRG A6  - |04   25| - PRG A8                    - |06   27| -                              ---_---                CPU A7 |06   36| CPU D7                 (fr) CPU A6 -> |06    43| <- CPU A8 (fr)    
+ A5  - |07   26| - A9           PRG A5  - |05   24| - PRG A9                    - |07   26| -                CONN 14pin - |01   14| - +5V         CPU A6 |07   37| CPU D6                 (fr) CPU A5 -> |07    42| <- CPU A9 (fr)    
+ A4  - |08   25| - A11          PRG A4  - |06   23| - PRG A11                   - |08   25| -                CONN 14pin - |02   13| - +5v         CPU A5 |08   38| CPU D5                 (fr) CPU A4 -> |08    41| <- CPU A11 (fr)   
+ A3  - |09   24| - OE#          PRG A3  - |07   22| - PRG A16                   - |09   24| - --------------------+---- - |03   12| - +5v         CPU A4 |09   39| CPU D4                 (fr) CPU A3 -> |09    40| -> PRG A16 (r)    
+ A2  - |10   23| - A10          PRG A2  - |08   21| - PRG A10                   - |10   23| -                     +---- - |04   11| ----+         CPU A3 |10   40| CPU D3                 (fr) CPU A2 -> |10    39| <- CPU A10 (fr) 
+ A1  - |11   22| - CE#          PRG A1  - |09   20| - /ROMSEL                   - |11   22| -                     +---- - |05   10| ----|         CPU A2 |11   41| CPU D2                 (fr) CPU A1 -> |11    38| <- /ROMSEL (fr) 
+ A0  - |12   21| - D7           PRG A0  - |10   19| - PRG D7                    - |12   21| -                        NC - |06   09| ----+         CPU A1 |12   42| CPU D1                 (fr) CPU A0 -> |12    37| <> PRG D7 (fr)  
+ D0  - |13   20| - D6           PRG D0  - |11   18| - PRG D6                    - |13   20| -                       GND - |07   08| - NC          CPU A0 |13   43| CPU D0                 (fr) CPU D0 <> |13    36| <> PRG D6 (fr)  
+ D1  - |14   19| - D5           PRG D1  - |12   17| - PRG D5                    - |14   19| -                              -------              CPU R/W  |14   44| CPU /ROMCS             (fr) CPU D1 <> |14    35| <> PRG D5 (fr)  
+ D2  - |15   18| - D4           PRG D2  - |13   16| - PRG D4                    - |15   18| -                                                   CPU /IRQ |15   45| SOUND IN               (fr) CPU D2 <> |15    34| <> PRG D4 (fr)  
+ Vss - |16   17| - D3           GND     - |14   15| - PRG D3                    - |16   17| -                                                        GND |16   46| SOUND OUT              (f) CPU R/W -> |16    33| <> PRG D3 (fr)  
+        -------                            -------                                 -------                                                       PPU /RD |17   47| PPU /WR                (r) CHR A17 <- |17    32| -- NC           
+                                                                                                                                                VRAM A10 |18   48| VRAM /CS                       GND -- |18    31| -> CIRAM A10 (f)
+                                                                                                                                                  PPU A6 |19   49| PPU /A13               (r) CHR A15 <- |19    30| -> CHR A14 (r)  
+                               CHR MASK ROM                           512KBytes as CHR                                                            PPU A5 |20   50| PPU A7                 (r) CHR A12 <- |20    29| -> CHR A13 (r)  
+                               --------------------------------       ----------------------------------                                          PPU A4 |21   51| PPU A8                 (f) PPU A10 -> |21    28| -> CHR A11 (r)  
+                                                                                                                                                  PPU A3 |22   52| PPU A9                 (f) PPU A11 -> |22    27| -> CHR A16 (r)  
+                                           ---_---                                 ---_---                                                        PPU A2 |23   53| PPU A10                (f) PPU A12 -> |23    26| -> CHR A10 (r)  
+                                     NC - |01   32| - VCC                   +5v - |01   32| -                                                     PPU A1 |24   54| PPU A11                        GND -- |24    25| -- NC           
+                            (OE)PPU /RD - |02   31| - NC              CHR 24pin - |02   31| - CONN 47pin                                          PPU A0 |25   55| PPU A12                               `--------'                 
+                                CHR A15 - |03   30| - NC                        - |03   30| - +5v                                                 PPU D0 |26   56| PPU A13               
+                                CHR A12 - |04   29| - CHR A14                   - |04   29| -                                                     PPU D1 |27   57| PPU D7                
+                                CHR A7  - |05   28| - CHR A13                   - |05   28| -                                                     PPU D2 |28   58| PPU D6                
+                                CHR A6  - |06   27| - CHR A8                    - |06   27| -                                                     PPU D3 |29   59| PPU D5                
+                                CHR A5  - |07   26| - CHR A9                    - |07   26| -                                                        +5V |30   60| PPU D4                 Variant pinout for mapper 207:
+                                CHR A4  - |08   25| - CHR A11                   - |08   25| -                                                            +-------+                        (f) CIRAM A10 <- |17    32| -- NC
+                                CHR A3  - |09   24| - CHR A16                   - |09   24| - CHR 2pin                                                                                              GND -- |18    31| -> NC
+                                CHR A2  - |10   23| - CHR A10                   - |10   23| -                                                                                             
+                                CHR A1  - |11   22| - PPU A13 (CE)              - |11   22| -                                                                                    
+                                CHR A0  - |12   21| - CHR D7                    - |12   21| -                                            
+                                CHR D0  - |13   20| - CHR D6                    - |13   20| -                                            
+                                CHR D1  - |14   19| - CHR D5                    - |14   19| -                                            
+                                CHR D2  - |15   18| - CHR D4                    - |15   18| -                                         
+                                GND     - |16   17| - CHR D3                    - |16   17| -                                         
+                                           -------                                 -------                                            

@@ -1,0 +1,23 @@
+/*
+Taito X1-005
+TFC-FM-5900 不動明王伝のみ Program ROM size は 2M
+
+Program functions by Max @2017/8/13
+*/
+board <- {
+	mappernum = 207, ppu_ramfind = false, vram_mirrorfind = false,
+	cpu_rom = {
+		size_base = 1 * mega, size_max = 2 * mega,
+		banksize = 0x2000
+	},
+	cpu_ram = {
+		size_base = 0x100 * 0x20, size_max = 0x100 * 0x20,
+		banksize = 0x2000
+	}
+	ppu_rom = {
+		size_base = 1 * mega, size_max = 1 * mega,
+		banksize = 0x0400
+	}
+};
+
+dofile("taito_x1_005.ai");

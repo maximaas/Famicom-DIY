@@ -1,0 +1,112 @@
+
+function cpu_dump(d, pagesize, banksize)
+{
+	local i;
+	for(i = 0; i < pagesize - 2; i += 2){
+		cpu_write(d, 0x7efa, i);
+		cpu_write(d, 0x7efc, i | 1);
+		cpu_read(d, 0x8000, banksize * 2);
+	}
+	cpu_write(d, 0x7efe, i);
+	cpu_read(d, 0xc000, banksize * 2);
+}
+
+function ppu_dump(d, pagesize, banksize)
+{
+	for(local i = 0; i < pagesize; i += 8){
+		local ar = [i, i|2, i|4, i|5, i|6, i|7];
+		cpu_write(d, 0x7ef0, ar);
+		ppu_read(d, 0x0000, banksize * 8);
+	}
+}
+
+/*
+0x2000 byte のデータの offset 0x1f00-0x1f7f のみ有効
+*/
+function cpu_ram_access(d, pagesize, banksize)
+{
+	cpu_write(d, 0x7ef8, 0xa3);
+	for(local i = 0; i < 0x1f80; i += 0x80){
+		cpu_ramrw(d, 0x7f00, 0x0080);
+	}
+	cpu_ramrw(d, 0x6000, 0x0080); //offset 0x1f80-0x1fff を捨てる
+	cpu_write(d, 0x7ef8, 0x00);
+}
+
+
+/*
+CPU meomory banks:
+  $8000   $A000   $C000   $E000  
++-------+-------+-------+--------+
+| $7EFA | $7EFC | $7EFE |  {-1}  |
++-------+-------+-------+--------+
+<------switchable------>|<-fixed->
+
+PRG register 0/1/2.
+7  bit  0
+PPPP PP..
+|||| ||
+++++-++--The low 2 bits are not used (right-shift written values by 2)
+
+PPU memory banks:
+  $0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
++---------------+---------------+-------+-------+-------+-------+
+|    <$7EF0>    |    <$7EF1>    | $7EF2 | $7EF3 | $7EF4 | $7EF5 |
++---------------+---------------+-------+-------+-------+-------+
+
+CHR register 0 to 1 (2KB)
+7  bit  0
+CCCC CCC.
+|||| |||
+++++-+++-- Select 2 KiB CHR ROM
+
+CHR register 2 to 5 (1KB)
+7  bit  0
+CCCC CCCC
+|||| ||||
+++++-++++- Select 1 KiB CHR ROM
+
+*/
+function program_initalize(d, cpu_banksize, ppu_banksize)
+{
+	cpu_write(d, 0x7ef8, 0); //disable W-RAM
+
+	cpu_command(d, 0x0000, 0x8000, cpu_banksize);
+	cpu_command(d, 0x2aaa, 0xa000, cpu_banksize);
+	cpu_command(d, 0x5555, 0xc000, cpu_banksize);
+	
+	cpu_write(d, 0x7EFA, 0);    //switch $8000-$9FFF window to rom 1st bank $0000-$1FFF
+	cpu_write(d, 0x7EFC, 1<<2); //switch $A000-$BFFF window to rom 2nd bank
+	cpu_write(d, 0x7EFE, 2<<2); //switch $C000-$DFFF window to rom 3rd bank	
+	
+  ppu_command(d, 0x0000, 0x1000, ppu_banksize);
+	ppu_command(d, 0x2aaa, 0x0000, ppu_banksize*2);
+	ppu_command(d, 0x5555, 0x0800, ppu_banksize*2);
+	cpu_write(d, 0x7EF2, 0);  //switch $1000-$13FF window to rom 1st bank $0000-$0800
+	cpu_write(d, 0x7EF0, 10); //switch $0000-$07FF window to rom 11st 2k bank
+	cpu_write(d, 0x7EF1, 20); //switch $1000-$13FF window to rom 21st 2k bank
+	
+}
+
+function cpu_transfer(d, start, end, cpu_banksize)
+{
+	for(local i = start; i < end - 1; i += 1){
+		cpu_write(d, 0x7EFA, i);
+		cpu_program(d, 0x8000, cpu_banksize);
+	}
+	cpu_program(d, 0xE000, cpu_banksize);
+}
+
+function ppu_transfer(d, start, end, ppu_banksize)
+{
+	for(local i = start; i < end; i += 4){
+		//Use the four 1KB-window to switch rom banks
+		cpu_write(d, 0x7EF2, i);
+		cpu_write(d, 0x7EF3, i|1);
+		cpu_write(d, 0x7EF4, i|2);
+		cpu_write(d, 0x7EF5, i|3);
+		
+		//program the above 4 banks
+		ppu_program(d, 0x1000, ppu_banksize * 4);
+	}
+}
