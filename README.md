@@ -47,5 +47,5 @@ Refer to [https://maximaas.github.io/blog](https://maximaas.github.io/blog) for 
 
 *   Just Breed: front and back sticker.
 *   霸王的大陆: front and back sticker.
-*   不动明王传: front sticker.
+*   不动明王传: front sticker.
 
