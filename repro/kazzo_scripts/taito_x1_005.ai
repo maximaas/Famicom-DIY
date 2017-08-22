@@ -75,16 +75,17 @@ function program_initalize(d, cpu_banksize, ppu_banksize)
 	cpu_command(d, 0x2aaa, 0xa000, cpu_banksize);
 	cpu_command(d, 0x5555, 0xc000, cpu_banksize);
 	
-	cpu_write(d, 0x7EFA, 0);    //switch $8000-$9FFF window to rom 1st bank $0000-$1FFF
+	//cpu_write(d, 0x7EFA, 0);    //switch $8000-$9FFF window to rom 1st bank $0000-$1FFF
 	cpu_write(d, 0x7EFC, 1<<2); //switch $A000-$BFFF window to rom 2nd bank
 	cpu_write(d, 0x7EFE, 2<<2); //switch $C000-$DFFF window to rom 3rd bank	
 	
   ppu_command(d, 0x0000, 0x1000, ppu_banksize);
 	ppu_command(d, 0x2aaa, 0x0000, ppu_banksize*2);
 	ppu_command(d, 0x5555, 0x0800, ppu_banksize*2);
-	cpu_write(d, 0x7EF2, 0);  //switch $1000-$13FF window to rom 1st bank $0000-$0800
-	cpu_write(d, 0x7EF0, 10); //switch $0000-$07FF window to rom 11st 2k bank
-	cpu_write(d, 0x7EF1, 20); //switch $1000-$13FF window to rom 21st 2k bank
+	
+	//cpu_write(d, 0x7EF2, 0);  //switch $1000-$13FF window to rom 1st bank $0000-$0800
+	cpu_write(d, 0x7EF0, 8); //switch $0000-$07FF window to rom 11st 2k bank
+	cpu_write(d, 0x7EF1, 13); //switch $1000-$13FF window to rom 21st 2k bank
 	
 }
 
