@@ -4,7 +4,7 @@ My DIY work on Nintendo Famicom
 
 ## Controllers
 
-### *   Convert FC controllers to adapt to 9-pin RS232 socket
+### Convert FC controllers to adapt to 9-pin RS232 socket
 The original FC controller have a 5-pin(1p) or 6-pin(2p) pin head plugged into the socket on main PCB board. Unlike its successors, the FC controller can not be replaced easily without opening the case.
 
 ![image](https://github.com/maximaas/Famicom-DIY/blob/master/pad/9pin_mod/01.jpg)
@@ -41,8 +41,11 @@ Refer to [https://maximaas.github.io/blog](https://maximaas.github.io/blog) for 
 *   MMC1 - SLROM.txt: wiring instruction for mmc1 slrom.
 *   MMC5 - ETROM.txt: wiring instruction for mmc5 etrom.
 *   Namcot-163.txt: wiring instruction for Namcot-163 board.
+*   Taito X1-005.txt: wiring instruction for Taito X1-005 board.
 
 ## Stickers
 
 *   Just Breed: front and back sticker.
+*   霸王的大陆: front and back sticker.
+*   不动明王传: front sticker.
 
