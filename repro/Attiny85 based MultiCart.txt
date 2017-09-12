@@ -1,0 +1,61 @@
+Attiny85 based MultiCart
+
+
+ DigiSpark Attiny85 Board  		 	       74HC161                     
+ --------------------------            ----------------------------
+                                                                                                           
+        +-------------+                   
+        |           P5| -                     ---_---                      
+  +5v - |+5v        P4| -              +5v - |01   16| - +5V               
+        |           P3| - ---------------- - |02   15| -                         
+  GND - |GND        P2| - CPU ¦Õ2           - |03   14| - chip address pin to hijack
+        |           P1| - LED              - |04   13| -                  
+      - |VIN        P0| -                  - |05   12| -                           
+        +-------------+                    - |06   11| -                   
+                                       +5v - |07   10| - +5v               
+                                       GND - |08   09| - +5v               
+                                              -------
+
+
+
+NesResetDetector.ino
+-------------------------------------------------------------
+#include "Arduino.h"
+
+#define LED 1 //P1
+#define M2_PIN 1 //P2
+#define S0 3 //P3
+
+int m2Reading = 0;
+long resetTime = -1;
+
+void setup() {
+	pinMode(S0, OUTPUT);
+	digitalWrite(S0, LOW);
+
+	pinMode(LED, OUTPUT);
+	digitalWrite(LED, HIGH);
+}
+
+void loop() {
+  m2Reading = analogRead(M2_PIN); //Read P2
+
+  if (m2Reading > 100 && resetTime != -1) {
+	  resetTime = -1;
+  }
+
+  if (m2Reading < 100) {
+	  if (resetTime == -1)
+		  resetTime = millis();
+	  else if (resetTime >=0 ) {
+		  long resetDuration = millis() - resetTime;
+		  if (resetDuration > 500) {
+			  digitalWrite(S0,  HIGH);
+			  delay(1);
+			  digitalWrite(S0,  LOW);
+			  digitalWrite(LED, !digitalRead(LED));
+			  resetTime = -2;
+		  }
+	  }
+  }
+}
