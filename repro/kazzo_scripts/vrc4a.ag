@@ -1,0 +1,39 @@
+board <- {
+	mappernum = 21, ppu_ramfind = false, vram_mirrorfind = false,
+	cpu_rom = {
+		size_base = 2 * mega, size_max = 2 * mega,
+		banksize = 0x2000
+	},
+	ppu_rom = {
+		size_base = 1 * mega, size_max = 2 * mega,
+		banksize = 0x2000 / 8,
+	}
+};
+
+dofile("vrc4.ai");
+
+function cpu_dump(d, pagesize, banksize)
+{
+	vrc4_cpu_dump(d, pagesize, banksize, 1, 2);
+}
+
+function ppu_dump(d, pagesize, banksize)
+{
+	vrc4_ppu_dump(d, pagesize, banksize, 1, 2);
+}
+
+//RC857 cartridge does not use workram register control
+function cpu_ram_access(d, pagesize, banksize)
+{
+	cpu_ramrw(d, 0x6000, banksize);
+}
+
+function program_initalize(d, cpu_banksize, ppu_banksize)
+{
+	vrc4_program_initialize(d, cpu_banksize, ppu_banksize, 1, 2)
+}
+
+function ppu_transfer(d, start, end, ppu_banksize)
+{
+	vrc4_ppu_transfer(d, start, end, ppu_banksize, 1, 2);
+}
