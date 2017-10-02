@@ -1,0 +1,139 @@
+/*VRC6 type B/351949A/address bus A0=R1, A1=R0
+CPU memory bank
+cpu address|rom address    |page|task
+$8000-$bfff|n * 0x4000     |even|write area + write 0x2aaa
+$c000-$dfff|0x04000-0x05fff|2   |write 0x5555
+-------------------------------------
+$8000-$bfff|n * 0x4000     |odd |write area + write 0x5555
+$c000-$dfff|0x02000-0x03fff|1   |write 0x2aaa
+$e000-$efff|末尾           |fix |boot area, 未使用
+
+PPU memory bank
+ppu address|rom address    |page|task
+$0000-$03ff|0x02800-0x02bff|0x0a|write (0x2aaa & 0x03ff) + 0
+$0400-$07ff|0x05400-0x057ff|0x15|write (0x5555 & 0x03ff) + 0x400
+$1000-$1fff|n * 0x1000     |n   |write area*/
+
+board <- {
+     mappernum = 26,
+     cpu_rom = {
+            size_base = 2 * mega, size_max = 2 * mega,
+            banksize = 0x4000
+     },
+     ppu_rom = {
+            size_base = 2 * mega, size_max = 2 * mega,
+            banksize = 0x0400
+     },                 
+     cpu_ram = {
+		size_base = 0x2000, size_max = 0x2000,
+		banksize = 0x2000,
+     },
+     ppu_ramfind = false,
+     vram_mirrorfind = false
+}
+
+function cpu_dump(d, pagesize, banksize)
+{
+     // 16k bank 
+     // 0x00000-0x3bfff
+     for(local i = 0; i < pagesize - 1; i++){
+         cpu_write(d, 0x8000, i);
+         cpu_read(d, 0x8000, banksize);
+     }
+     // 8k bank
+     // 0x3c000-0x3ffff
+     cpu_write(d, 0xc000, 0x1e);
+     cpu_read(d, 0xc000, banksize/2);
+     cpu_read(d, 0xe000, banksize/2);
+}
+
+function ppu_dump(d, pagesize, banksize)
+{
+     cpu_write(d, 0xb003, 0x20);
+     for(local i = 0; i < pagesize; i += 4){
+         cpu_write(d, 0xe000, i | 0);
+         cpu_write(d, 0xe002, i | 1);
+         cpu_write(d, 0xe001, i | 2);
+         cpu_write(d, 0xe003, i | 3);
+         ppu_read(d, 0x1000, banksize * 4);
+      }
+}                    
+
+/* WorkRAM
+          PPU Banking Style ($B003)
+
+7  bit  0
+---------
+W.PN MMDD
+| || ||||
+| || ||++- PPU banking mode; see below
+| || ++--- Mirroring varies by banking mode, see below
+| |+------ 1: Nametables come from CHRROM, 0: Nametables come from CIRAM
+| +------- CHR A10 is 1: subject to further rules 0: according to the latched value
++--------- PRG RAM enable
+
+*/
+function cpu_ram_access(d, pagesize, banksize)
+{
+	cpu_write(d, 0xb003, 0xEB);
+	cpu_ramrw(d, 0x6000, banksize);
+	cpu_write(d, 0xb003, 0x7F);
+}
+
+function cpubank_even_set(d, bank, cpu_banksize)
+{
+	cpu_command(d, 0x2aaa, 0x8000, cpu_banksize);
+	cpu_command(d, 0x5555, 0xc000, 0x2000);
+	cpu_write(d, 0x8000, bank)
+	cpu_write(d, 0xc000, 2)
+}
+
+function program_initalize(d, cpu_banksize, ppu_banksize)
+{
+	cpubank_even_set(d, 0, cpu_banksize);
+	cpu_command(d, 0, 0x8000, cpu_banksize);
+
+	ppu_command(d, 0x2aaa, 0, ppu_banksize);
+	ppu_command(d, 0x5555, 0x0400, ppu_banksize);
+	ppu_command(d, 0, 0x0800, ppu_banksize);
+	
+	cpu_write(d, 0xb003, 0); //work ram disable
+	cpu_write(d, 0xd000, 0x0a);
+	cpu_write(d, 0xd002, 0x15);
+	cpu_write(d, 0xd001, 0x00);
+	cpu_write(d, 0xd003, 0x00);
+}
+
+function cpu_transfer(d, start, end, cpu_banksize)
+{
+	local i;
+	for(i = start; i < end - 2; i += 2){
+		cpubank_even_set(d, i, cpu_banksize);
+		cpu_program(d, 0x8000, cpu_banksize);
+		
+		cpu_command(d, 0x5555, 0x8000, cpu_banksize);
+		cpu_command(d, 0x2aaa, 0xc000, 0x2000);
+		cpu_write(d, 0x8000, i | 1)
+		cpu_write(d, 0xc000, 1)
+		cpu_program(d, 0x8000, cpu_banksize);
+	}
+	cpubank_even_set(d, i, cpu_banksize);
+	cpu_program(d, 0x8000, cpu_banksize);
+
+	cpu_command(d, 0x5555, 0x8000, cpu_banksize);
+	cpu_command(d, 0x2aaa, 0xc000, 0x2000);
+	cpu_write(d, 0x8000, i | 1)
+	cpu_write(d, 0xc000, 1)
+	cpu_program(d, 0x8000, cpu_banksize);
+}
+
+function ppu_transfer(d, start, end, ppu_banksize)
+{
+	for(local i = start; i < end; i += 4){
+		cpu_write(d, 0xe000, i | 0);
+		cpu_write(d, 0xe002, i | 1);
+		cpu_write(d, 0xe001, i | 2);
+		cpu_write(d, 0xe003, i | 3);
+		ppu_program(d, 0x1000, ppu_banksize * 4);
+	}
+}
