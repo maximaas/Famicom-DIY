@@ -1,0 +1,52 @@
+KONAMI VRC2
+mapper25 & mapper23 & mapper21
+Kazzo script: vrc2b.ag for Wai Wai World; vrc4a.ag for Wai Wai World 2
+
+512KBytes - MX29F004  		          PRG MASK ROM                                            512KBytes as PRG				                             Famicom Cartridge Connector                VRC2&4
+--------------------------          ----------------------------------                      ----------------------------------                   ----------------------------               -----------------------------------------
+
+            ---_---                                 ---_---                                              ---_---                                          +-------+                                              --\/--
+     A18 - |01   32| - Vdd                   +5v - |01   32| - +5V                      +5v/multicart - |01   32| -                                   GND |01   31| +5V                          (f) CPU A13 -> |01  40| -- +5V
+     A16 - |02   31| - WE#               PRG A16 - |02   31| - +5V                                    - |02   31| - CONN 14pin/VRC2 9pin          CPU A11 |02   32| CPU ¦Õ2 /M2                   (f) CPU A14 -> |02  39| -> PRG A17 (r) 
+     A15 - |03   30| - A17               PRG A15 - |03   30| - PRG A17                                - |03   30| -                               CPU A10 |03   33| CPU A12                    * (fr) CPU Ax -> |03  38| -> PRG A15 (r) *
+     A12 - |04   29| - A14               PRG A12 - |04   29| - PRG A14                                - |04   29| -                                CPU A9 |04   34| CPU A13                    * (fr) CPU Ay -> |04  37| <- CPU A12 (f) *
+     A7  - |05   28| - A13               PRG A7  - |05   28| - PRG A13                                - |05   28| -                                CPU A8 |05   35| CPU A14                      (f) PPU A12 -> |05  36| -> PRG A14 (r)
+     A6  - |06   27| - A8                PRG A6  - |06   27| - PRG A8                                 - |06   27| -                                CPU A7 |06   36| CPU D7                       (f) PPU A11 -> |06  35| -> PRG A13 (r)
+     A5  - |07   26| - A9                PRG A5  - |07   26| - PRG A9                                 - |07   26| -                                CPU A6 |07   37| CPU D6                       (f) PPU A10 -> |07  34| -> PRG A16 (r)
+     A4  - |08   25| - A11               PRG A4  - |08   25| - PRG A11                                - |08   25| -                                CPU A5 |08   38| CPU D5                       (r) PRG /CE <- |08  33| <- CPU D0 (fr)
+     A3  - |09   24| - OE#               PRG A3  - |09   24| - PRG /CE                                - |09   24| -                                CPU A4 |09   39| CPU D4                       (f) CPU R/W -> |09  32| <- CPU D1 (fr)
+     A2  - |10   23| - A10               PRG A2  - |10   23| - PRG A10                                - |10   23| -                                CPU A3 |10   40| CPU D3                       (r) CHR /CE <- |10  31| <- CPU D2 (fr)
+     A1  - |11   22| - CE#               PRG A1  - |11   22| - GND                                    - |11   22| - CONN 44pin/VRC2 14pin          CPU A2 |11   41| CPU D2                      (f) PPU  A13 -> |11  30| <- CPU D4 (fr)
+     A0  - |12   21| - D7                PRG A0  - |12   21| - PRG D7                                 - |12   21| -                                CPU A1 |12   42| CPU D1                       (f) PPU /OE -> |12  29| <- CPU D3 (fr)
+     D0  - |13   20| - D6                PRG D0  - |13   20| - PRG D6                                 - |13   20| -                                CPU A0 |13   43| CPU D0                     (f) CIRAM A10 <- |13  28| -> CHR A17 (r)
+     D1  - |14   19| - D5                PRG D1  - |14   19| - PRG D5                                 - |14   19| -                              CPU R/W  |14   44| CPU /ROMCS                   (f) /ROMSEL -> |14  27| -> CHR A15 (r)
+     D2  - |15   18| - D4                PRG D2  - |15   18| - PRG D4                                 - |15   18| -                              CPU /IRQ |15   45| SOUND IN                          (f) M2 -> |15  26| -> CHR A12 (r)
+     Vss - |16   17| - D3                GND     - |16   17| - PRG D3                                 - |16   17| -                                   GND |16   46| SOUND OUT               VRC4 (f) CHR A18 <- |16  25| -> CHR A14 (r)
+            -------                                 -------                                              -------                                  PPU /RD |17   47| PPU /WR                    VRC4 (f) /IRQ <- |17  24| -> CHR A13 (r)
+                                                                                                                                                 VRAM A10 |18   48| VRAM /CS                               ? -- |18  23| -> CHR A11 (r)
+                                                                                                                                                   PPU A6 |19   49| PPU /A13                   VRC4 WRAM /CE <- |19  22| -> CHR A16 (r)
+                                    CHR MASK ROM                                            512KBytes as CHR                                       PPU A5 |20   50| PPU A7                               GND -- |20  21| -> CHR A10 (r)
+                                    --------------------------                              ----------------------------------                     PPU A4 |21   51| PPU A8                                       ------
+                                                                                                                                                   PPU A3 |22   52| PPU A9
+                                                    ---_---                                              ---_---                                   PPU A2 |23   53| PPU A10
+                                             +5v - |01   32| - +5V                      +5v/multicart - |01   32| -                                PPU A1 |24   54| PPU A11                  VRC2c, mapper 25 (Ganbare Goemon Gaiden)
+                                         CHR A16 - |02   31| - +5v                                    - |02   31| - CONN 47pin                     PPU A0 |25   55| PPU A12                     (fr) CPU A0 -> |03  38| -> PRG A15 (r)
+                                         CHR A15 - |03   30| - CHR A17                                - |03   30| -                                PPU D0 |26   56| PPU A13                     (fr) CPU A1 -> |04  37| <- 74'139 /Y2[1]
+                                         CHR A12 - |04   29| - CHR A14                                - |04   29| -                                PPU D1 |27   57| PPU D7
+                                         CHR A7  - |05   28| - CHR A13                                - |05   28| -                                PPU D2 |28   58| PPU D6                   VRC2b, mapper 23 (Wai Wai World)         
+                                         CHR A6  - |06   27| - CHR A8                                 - |06   27| -                                PPU D3 |29   59| PPU D5                      (fr) CPU A1 -> |03  38| -> PRG A15 (r)
+                                         CHR A5  - |07   26| - CHR A9                                 - |07   26| -                                   +5V |30   60| PPU D4                      (fr) CPU A0 -> |04  37| <- CPU A12 (f)
+                                         CHR A4  - |08   25| - CHR A11                                - |08   25| -                                       +-------+                                                                   
+                                         CHR A3  - |09   24| - PPU /OE VRC 12pin (/RD?)               - |09   24| -                                                                          VRC4a, mapper 21 (Wai Wai World 2)                            
+                                         CHR A2  - |10   23| - CHR A10                                - |10   23| -                                                                             (fr) CPU A2 -> |03  38| -> PRG A15 (r)                   
+                                         CHR A1  - |11   22| - PPU A13                                - |11   22| -                                                                             (fr) CPU A1 -> |04  37| <- CPU A12 (f)
+                                         CHR A0  - |12   21| - CHR D7                                 - |12   21| -                                                                                                                   
+                                         CHR D0  - |13   20| - CHR D6                                 - |13   20| -                                                                          VRC4c, mapper 21 (Goemon Gaiden 2)                          
+                                         CHR D1  - |14   19| - CHR D5                                 - |14   19| -                                                                             (fr) CPU A7 -> |03  38| -> PRG A15 (r)                   
+                                         CHR D2  - |15   18| - CHR D4                                 - |15   18| -                                                                             (fr) CPU A6 -> |04  37| <- CPU A12 (f)
+                                         GND     - |16   17| - CHR D3                                 - |16   17| -                                                                                                                   
+                                                    -------                                              -------                                                                             r: connects to ROM                       
+                                                                                                                                                                                             f: connects to Famicom                   
+ 	references: http://blog.naver.com/PostView.nhn?blogId=xsnake&logNo=220266981002&beginTime=0&jumpingVid=&from=search&redirect=Log&widgetTypeCall=true
+							http://unagi.sourceforge.jp/cgi-bin/hiki/hiki.cgi?VRC4
+							http://bakutendo.blog87.fc2.com/blog-entry-198.html                                                   
