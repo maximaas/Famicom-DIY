@@ -1,0 +1,130 @@
+//cpu_dump, ppu_dump 内で同名の関数を呼んではいけない
+function cpu_dump(d, pagesize, banksize)
+{
+	
+	for(local i = 0; i < pagesize - 1; i += 1){
+		cpu_write(d, register_offset + 8, i);
+		cpu_read(d, 0x8000, banksize);
+	}
+	cpu_read(d, 0xc000, banksize);
+}
+
+function ppu_dump(d, pagesize, banksize)
+{
+	for(local i = 0; i < pagesize; i += 8){
+		for(local j = 0; j < 8; j += 1){
+			cpu_write(d, register_offset + j, i + j);
+			ppu_read(d, j * banksize, banksize);
+		}
+	}
+}
+
+function program_initalize(d, cpu_banksize, ppu_banksize)
+{
+	cpu_write(d, 0x8008, 0x00);
+	cpu_command(d, 0x0000, 0x8000, cpu_banksize);
+	cpu_command(d, 0x02aa, 0xc000, cpu_banksize);
+	cpu_command(d, 0x0555, 0xc000, cpu_banksize);
+	cpu_write(d, 0x8000, [0x0a, 0x15, 0]);
+	ppu_command(d, 0x2aaa, 0, ppu_banksize);
+	ppu_command(d, 0x5555, 0x0400, ppu_banksize);
+	ppu_command(d, 0, 0x0800, ppu_banksize);
+}
+
+function cpu_transfer(d, start, end, cpu_banksize)
+{
+	for(local i = start; i < end - 1; i +=1){
+		cpu_write(d, 0x8008, i);
+		cpu_program(d, 0x8000, cpu_banksize);
+	}
+	cpu_program(d, 0xc000, cpu_banksize);
+}
+
+function ppu_transfer(d, start, end, ppu_banksize)
+{
+	for(local i = start; i < end; i +=4){
+		cpu_write(d, 0x8004, [i, i+1, i+2, i+3]);
+		ppu_program(d, 0x1000, ppu_banksize * 4);
+	}
+}
+/*
+$800d
+7 data direction 0:FCG3->EEPROM (write), 1:EEPROM->FCG3 (read)
+6 data, FCG3 -> EEPROM
+5 clock
+
+$6000-$7fff
+4 data, EEPROM -> FCG3
+*/
+const I2C_READBIT = 4;
+const I2C_DIRBIT = 7;
+const I2C_WRITEBIT = 6;
+const I2C_CLOCKBIT = 5;
+
+I2C_DIR_READ <- 1 << I2C_DIRBIT;
+I2C_DIR_WRITE <- 0 << I2C_DIRBIT;
+I2C_SEND_H <- 1 << I2C_WRITEBIT;
+I2C_SEND_L <- 0 << I2C_WRITEBIT;
+I2C_CLOCK_H <- 1 << I2C_CLOCKBIT;
+I2C_CLOCK_L <- 0 << I2C_CLOCKBIT;
+
+function i2c_start(d)
+{
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_L | I2C_SEND_L);
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_L | I2C_SEND_H);
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_H | I2C_SEND_H);
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_H | I2C_SEND_L);
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_L | I2C_SEND_L);
+}
+
+function i2c_stop(d)
+{
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_L | I2C_SEND_L);
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_H | I2C_SEND_L);
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_H | I2C_SEND_H);
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_L | I2C_SEND_H);
+	cpu_write(d, 0x800d, I2C_DIR_READ | I2C_CLOCK_L | I2C_SEND_H);
+}
+
+function i2c_ack_wait(d)
+{
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_L | I2C_SEND_H);
+	cpu_write(d, 0x800d, I2C_DIR_READ | I2C_CLOCK_H | I2C_SEND_L);
+	local n = cpu_read_register(d, 0x6000, 0);
+	n = n & (1 << I2C_READBIT);
+	return n == 0;
+}
+
+
+function send_bit(d, v)
+{
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_L | I2C_SEND_L);
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_L | v);
+	cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_H | v);
+}
+
+function i2c_address_set(d, address, rw)
+{
+	do{
+		local a = address;
+		i2c_start(d);
+		for(local i = 0; i < 7; i++){
+			send_bit(d, a & I2C_SEND_H);
+			a = a << 1;
+		}
+		send_bit(d, rw);
+	}while(i2c_ack_wait(d) != true);
+}
+
+function eeprom_address_set(d, address)
+{
+	for(local i = 0; i < 8; i++){
+		local n = I2C_SEND_L;
+		if(address & 0x80){
+			n = I2C_SEND_H;
+		}
+		send_bit(d, n);
+		address = address << 1;
+	}
+	i2c_ack_wait(d);
+}

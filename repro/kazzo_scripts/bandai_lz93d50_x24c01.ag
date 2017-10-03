@@ -1,0 +1,95 @@
+/*
+BANDAI FCG-3 + X24C01 style cartridge
+
+SDガンダム外伝 ナイトガンダム物語
+	1990-08-11 B50EEP, LZ93D50+X24C01
+ドラゴンボールZ 強襲！サイヤ人
+	1990-10-27 DRAGON BALLZ, LZ93D50+X24C01
+まじかる☆タルるートくん ファンタスティックワールド
+	1991-03-21 DRAGON BALLZ-B, LZ93D50+X24C01
+まじかる☆タルるートくん2
+	1992-06-19 DRAGON BALLZ-B, LZ93D50+X24C01 ← 24C02 ではない
+*/
+board <- {
+	mappernum = 16, 
+	cpu_rom = {
+		size_base = 2 * mega, size_max = 2 * mega,
+		banksize = 0x4000
+	}, 
+	cpu_ram = {
+		size_base = 0x0080, size_max = 0x0080,
+		banksize = 0x0080
+	},
+	ppu_rom = {
+		size_base = 1 * mega, size_max = 2 * mega,
+		banksize = 0x0400
+	},
+	ppu_ramfind = false,
+	vram_mirrorfind = false
+};
+
+const register_offset = 0x8000;
+dofile("bandai_lz93d50.ai");
+
+/*
+=====================
+X24C01 frame sequence
+=====================
+<START>[EEPROM address+RW]<A-ACK>[data]<D-ACK><STOP>
+
+<> is 1bit, [] is 8bit, A-ACK is address acknowledge, 
+D-ACK is data acknowledge, R is 1, W is 0
+
+8bit data send MSB to LSB (bit7 to bit0)
+Dragon Ball Z1's program send address LSB to MSB (bug).
+
+slave address does not exist.
+
+--current address read--
+<START>[EEPROM address,R]<A-ACK>[EEPROM data]<D-ACK><STOP>
+
+--sequenctial read--
+<START>[EEPROM address,R]<A-ACK>|[EEPROM data]<D-ACK>|<STOP>
+                                |<- loop any times ->|
+
+--page write---
+|<START>[EEPROM address,W]<A-ACK>|[EEPROM data]<D-ACK>|<STOP>
+|<-     loop A-ACK is H        ->|<- loop 1to4times ->|
+*/
+
+function cpu_ram_access(d, pagesize, banksize)
+{
+	local I2C_WRITE = I2C_SEND_L;
+	local I2C_READ = I2C_SEND_H;
+
+	if(mode_is_read(d) == true){
+		//sequential read
+		i2c_address_set(d, 0, I2C_READ);
+		for(local i = 0; i < pagesize * banksize; i++){
+			for(local bit = 0; bit < 8; bit++){
+				cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_L | I2C_SEND_H);
+				cpu_write(d, 0x800d, I2C_DIR_READ | I2C_CLOCK_H | I2C_SEND_H);
+				cpu_read_bit_msb(d, 0x6000, 4);
+			}
+			//send ack
+			send_bit(d, I2C_SEND_L);
+		}
+		i2c_stop(d);
+	}else{
+		//page write (4byte)
+		for(local i = 0; i < pagesize * banksize; i+=4){
+			i2c_address_set(d, i, I2C_WRITE);
+			for(local j = 0; j < 4; j++){
+				for(local bit = 0; bit < 8; bit++){
+					local n = I2C_SEND_L;
+					if(cpu_fetch_bit_msb(d) != 0){
+						n = I2C_SEND_H;
+					}
+					send_bit(d, n);
+				}
+				i2c_ack_wait(d);
+			}
+			i2c_stop(d);
+		}
+	}
+}

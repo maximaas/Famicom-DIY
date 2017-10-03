@@ -1,0 +1,19 @@
+board <- {
+     mappernum = 16, 
+     cpu_rom = {
+     size_base = 2 * mega, size_max = 2 * mega,
+      banksize = 0x4000
+ }, 
+ cpu_ram = {
+      size_base = 0x0000, size_max = 0x0000,
+      banksize = 0x2000
+ },
+ ppu_rom = {
+       size_base = 2 * mega, size_max = 2 * mega,
+       banksize = 0x0400
+ },
+ ppu_ramfind = false,
+ vram_mirrorfind = false
+};
+const register_offset = 0x6000;
+dofile("bandai_fcg2.ai");

@@ -1,0 +1,113 @@
+/*
+BANDAI FCG-3 + X24C02 style cartridge
+
+ドラゴンボールZII 激神フリーザ!!
+	1991-08-10, DRAGON BALLZ-B ,LZ93D50+X24C02
+SDガンダム外伝 ナイトガンダム物語2
+	1991-10-12, DRAGON BALLZ-B, LZ93D50+X24C02
+SDガンダム外伝 ナイトガンダム物語3
+	1992-10-23, DRAGON BALLZ-B, LZ93D50+X24C02
+DATACH 本体
+	1992-12-19, BA-BAR, LZ93D50P+X24C02 (Charcter RAM)
+クレヨンしんちゃん
+	1993-08-27, DRAGON BALLZ-B, LZ93D50 (EEPROM なし)
+ろくでなしBLUES
+	1993-10-29, DRAGON BALLZ-B, LZ93D50+X24C02
+*/
+board <- {
+	mappernum = 16, 
+	cpu_rom = {
+		size_base = 2 * mega, size_max = 2 * mega,
+		banksize = 0x4000
+	}, 
+	cpu_ram = {
+		size_base = 0x0100, size_max = 0x0100,
+		banksize = 0x0100
+	},
+	ppu_rom = {
+		size_base = 2 * mega, size_max = 2 * mega,
+		banksize = 0x0400
+	},
+	ppu_ramfind = false,
+	vram_mirrorfind = false
+};
+
+const register_offset = 0x8000;
+dofile("bandai_lz93d50.ai")
+/*
+=====================
+X24C02 frame sequence
+=====================
+<START>[slave address+RW]<A-ACK>[data]<D-ACK><STOP>
+
+<> is 1bit, [] is 8bit, A-ACK is address acknowledge, 
+D-ACK is data acknowledge, R is 1, W is 0
+
+slave address 6:3 is 4'b0101, fixed
+slave address 2:0 is 3'b000, configurated by PCB
+
+8bit data send MSB to LSB (bit7 to bit0)
+
+--current address set--
+<START>[0x50,W]<A-ACK>[EEPROM address]<D-ACK><STOP>
+
+--current address read--
+<START>[0x50,R]<A-ACK>[EEPROM data]<D-ACK><STOP>
+
+--sequenctial read--
+<START>[0x50,R]<A-ACK>|[EEPROM data]<D-ACK>|<STOP>
+                      |<- loop any times ->|
+
+after read operation, EEPROM address is incremented
+
+--page write---
+|<START>[0x50,W]<A-ACK>|[EEPROM address]<D-ACK>|[EEPROM data]<D-ACK>|<STOP>
+|<- loop A-ACK is H  ->|                       |<- loop 1to4times ->|
+
+After write operation, EEPROM controller is writing data, time is required of 2ms.
+duaring polling, A-ACK returns H. Retry operation.
+
+The page write count is different by the manufacturer.
+X24C01 and X24C02 are designed page write count is 4.
+*/
+function cpu_ram_access(d, pagesize, banksize)
+{
+	local I2C_WRITE = I2C_SEND_L;
+	local I2C_READ = I2C_SEND_H;
+
+	if(mode_is_read(d) == true){
+		//sequenctial read
+		i2c_address_set(d, 0x50, I2C_WRITE);
+		eeprom_address_set(d, 0);
+
+		i2c_address_set(d, 0x50, I2C_READ);
+		for(local i = 0; i < pagesize * banksize; i++){
+			for(local bit = 0; bit < 8; bit++){
+				cpu_write(d, 0x800d, I2C_DIR_WRITE | I2C_CLOCK_L | I2C_SEND_H);
+				cpu_write(d, 0x800d, I2C_DIR_READ | I2C_CLOCK_H | I2C_SEND_H);
+				cpu_read_bit_msb(d, 0x6000, 4);
+			}
+			//send ack
+			send_bit(d, I2C_SEND_L);
+		}
+		i2c_stop(d);
+	}else{
+		//page write. 4byte
+		for(local i = 0; i < pagesize * banksize; i+=4){
+			i2c_address_set(d, 0x50, I2C_WRITE);
+			eeprom_address_set(d, i);
+			for(local j = 0; j < 4; j++){
+				for(local bit = 0; bit < 8; bit++){
+					local n = I2C_SEND_L;
+					if(cpu_fetch_bit_msb(d) != 0){
+						n = I2C_SEND_H;
+					}
+					send_bit(d, n);
+				}
+				i2c_ack_wait(d);
+			}
+			i2c_stop(d);
+		}
+	}
+
+}

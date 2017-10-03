@@ -1,0 +1,57 @@
+//cpu_dump, ppu_dump same function call
+function cpu_dump(d, pagesize, banksize)
+{
+ 
+	for(local i = 0; i < pagesize - 1; i += 1){
+		cpu_write(d, register_offset + 8, i);
+		cpu_read(d, 0x8000, banksize);
+	}
+	cpu_read(d, 0xc000, banksize);
+}
+
+function ppu_dump(d, pagesize, banksize)
+{
+	for(local i = 0; i < pagesize; i += 8){
+		for(local j = 0; j < 8; j += 1){
+			cpu_write(d, register_offset + j, i + j);
+			ppu_read(d, j * banksize, banksize);
+		}
+	}
+}
+
+function program_initalize(d, cpu_banksize, ppu_banksize)
+{
+	cpu_write(d, register_offset,     0x00); // modified by xsnake CHR PAGE 0 (reset to re-write )
+	cpu_write(d, register_offset + 8, 0x00); // modified by xsnake PRG PAGE 0 (reset to re-write )
+	cpu_command(d, 0x0000, 0x8000, cpu_banksize);
+	cpu_command(d, 0x02aa, 0xc000, cpu_banksize);
+	cpu_command(d, 0x0555, 0xc000, cpu_banksize);
+	cpu_write(d, 0x8000, [0x0a, 0x15, 0]);
+	ppu_command(d, 0x2aaa, 0, ppu_banksize);
+	ppu_command(d, 0x5555, 0x0400, ppu_banksize);
+	ppu_command(d, 0, 0x0800, ppu_banksize);
+	// -------------- must initialize for re-write --------------- 
+	for(local j = 0; j < 8; j += 1){
+		cpu_write(d, register_offset + j,  j);
+	}
+	// -------------------------------------------------------
+}
+
+function cpu_transfer(d, start, end, cpu_banksize)
+{
+	for(local i = start; i < end - 1; i +=1){
+		cpu_write(d, register_offset + 8, i); // modified by xsnake
+		cpu_program(d, 0x8000, cpu_banksize);
+	}
+	cpu_program(d, 0xc000, cpu_banksize);
+}
+
+function ppu_transfer(d, start, end, ppu_banksize)
+{
+	local j= register_offset;
+	cpu_write(d, j,     0x00); // modified by xsnake CHR PAGE 0
+	for(local i = start; i < end; i +=4){
+		cpu_write(d, j+4, [i, i+1, i+2, i+3]); // modified by xsnake
+		ppu_program(d, 0x1000, ppu_banksize * 4);
+	}
+}

@@ -1,0 +1,55 @@
+Bandai
+FCG-1/2
+Kazzo script: bandai_fcg1&2.af
+
+512KBytes - MX29F004  				      PRG MASK ROM                                 512KBytes as PRG				                                                         Famicom Cartridge Connector                 Bandai FCG-1/2 LZ93D36         
+--------------------------          ------------------------------               ----------------------------------                                              ----------------------------                ---------------------------- 
+                                                                                                                                                                              
+            ---_---                                                                           ---_---                                                                     +-------+                                    ---_---            
+     A18 - |01   32| - Vdd                                                             GND - |01   32| - PRG 28pin                                                    GND |01   31| +5V                            ?? |01   42| +5V     
+     A16 - |02   31| - WE#                     ---_---                           PRG 22pin - |02   31| - CONN 14pin                                               CPU A11 |02   32| CPU ¦Õ2 /M2      CPU ¦Õ2 /M(delay?) |02   41| ??      
+     A15 - |03   30| - A17          PRG A15 - |01   28| - +5V                              - |03   30| - FCG 40pin                                                CPU A10 |03   33| CPU A12                   CPU A13 |03   40| PRG A17        
+     A12 - |04   29| - A14          PRG A12 - |02   27| - PRG A14                          - |04   29| -               74HC14                                      CPU A9 |04   34| CPU A13                   CPU A14 |04   39| PRG A15   
+     A7  - |05   28| - A13          PRG A7  - |03   26| - PRG A13                          - |05   28| -               ----------------------------                CPU A8 |05   35| CPU A14                    CPU A3 |05   38| PRG A14   
+     A6  - |06   27| - A8           PRG A6  - |04   25| - PRG A8                           - |06   27| -                                                           CPU A7 |06   36| CPU D7                     CPU A2 |06   37| PRG A16   
+     A5  - |07   26| - A9           PRG A5  - |05   24| - PRG A9                           - |07   26| -                             ---_---                       CPU A6 |07   37| CPU D6                     CPU A1 |07   36| CPU D7    
+     A4  - |08   25| - A11          PRG A4  - |06   23| - PRG A11                          - |08   25| -               CONN 14pin - |01   14| - +5V                CPU A5 |08   38| CPU D5                     CPU A0 |08   35| CPU D6    
+     A3  - |09   24| - OE#          PRG A3  - |07   22| - PRG A16                          - |09   24| - ------------------------ - |02   13| -                    CPU A4 |09   39| CPU D4                CPU ROMSEL# |09   34| CPU D5    
+     A2  - |10   23| - A10          PRG A2  - |08   21| - PRG A10                          - |10   23| -                          - |03   12| -                    CPU A3 |10   40| CPU D3                     CPU D0 |10   33| CPU D4    
+     A1  - |11   22| - CE#          PRG A1  - |09   20| - PRG /CE                          - |11   22| -                          - |04   11| -                    CPU A2 |11   41| CPU D2                     CPU D1 |11   32| CPU D3    
+     A0  - |12   21| - D7           PRG A0  - |10   19| - PRG D7                           - |12   21| -                          - |05   10| -                    CPU A1 |12   42| CPU D1                     CPU D2 |12   31| CPU IRQ#  
+     D0  - |13   20| - D6           PRG D0  - |11   18| - PRG D6                           - |13   20| -                          - |06   09| -                    CPU A0 |13   43| CPU D0                    CPU R/W |13   30| VRAM A10  
+     D1  - |14   19| - D5           PRG D1  - |12   17| - PRG D5                           - |14   19| -                      GND - |07   08| -                  CPU R/W  |14   44| CPU /ROMCS                PPU RD# |14   29| CHR A17   
+     D2  - |15   18| - D4           PRG D2  - |13   16| - PRG D4                           - |15   18| -                             -------                     CPU /IRQ |15   45| SOUND IN                  CHR A15 |15   28| CHR A14   
+     Vss - |16   17| - D3           GND     - |14   15| - PRG D3                           - |16   17| -                                                              GND |16   46| SOUND OUT                 CHR A12 |16   27| CHR A13   
+            -------                            -------                                        -------                                                             PPU /RD |17   47| PPU /WR                   PPU A10 |17   26| CHR A11   
+                                                                                                                                                                 VRAM A10 |18   48| VRAM /CS                  PPU A11 |18   25| CHR A16   
+                                                                                                                                                                   PPU A6 |19   49| PPU /A13                  PPU A12 |19   24| CHR A10   
+28pin CHR MASK ROM on FCG-1           32pin CHR MASK ROM on FCG-2                 512KBytes as CHR on FCG-1             512KBytes as CHR on FCG-2                  PPU A5 |20   50| PPU A7                    PPU A13 |20   23| CHR EN#   
+----------------------------------    ----------------------------------          ---------------------------------     ---------------------------------          PPU A4 |21   51| PPU A8                        GND |21   22| s? GND    
+                                                                                                                                                                   PPU A3 |22   52| PPU A9                             -------            
+                                                    ---_---                                    ---_---                               ---_---                       PPU A2 |23   53| PPU A10
+                                         CHR A17 - |01   32| - +5V                      GND - |01   32| - CHR 28pin           GND - |01   32| -                    PPU A1 |24   54| PPU A11
+              ---_---                    PPU A13 - |02   31| - +5V                CHR 22pin - |02   31| - CONN 47pin    CHR 24pin - |02   31| - CONN 47pin         PPU A0 |25   55| PPU A12
+   CHR A15 - |01   28| - +5V             CHR A15 - |03   30| - +5V                          - |03   30| - FCG 29pin               - |03   30| - CHR 1pin           PPU D0 |26   56| PPU A13
+   CHR A12 - |02   27| - CHR A14         CHR A12 - |04   29| - CHR A14                      - |04   29| -                         - |04   29| -                    PPU D1 |27   57| PPU D7
+   CHR A7  - |03   26| - CHR A13         CHR A7  - |05   28| - CHR A13                      - |05   28| -                         - |05   28| -                    PPU D2 |28   58| PPU D6
+   CHR A6  - |04   25| - CHR A8          CHR A6  - |06   27| - CHR A8                       - |06   27| -                         - |06   27| -                    PPU D3 |29   59| PPU D5
+   CHR A5  - |05   24| - CHR A9          CHR A5  - |07   26| - CHR A9                       - |07   26| -                         - |07   26| -                       +5V |30   60| PPU D4
+   CHR A4  - |06   23| - CHR A11         CHR A4  - |08   25| - CHR A11                      - |08   25| -                         - |08   25| -                           +-------+
+   CHR A3  - |07   22| - CHR A16         CHR A3  - |09   24| - CHR A16                      - |09   24| - CHR 20pin               - |09   24| - CHR 22pin            
+   CHR A2  - |08   21| - CHR A10         CHR A2  - |10   23| - CHR A10                      - |10   23| -                         - |10   23| -                  
+   CHR A1  - |09   20| - CHR /CE         CHR A1  - |11   22| - PPU /RD                      - |11   22| - GND                     - |11   22| - CHR 2pin                                         
+   CHR A0  - |10   19| - CHR D7          CHR A0  - |12   21| - CHR D7                       - |12   21| -                         - |12   21| -                                             
+   CHR D0  - |11   18| - CHR D6          CHR D0  - |13   20| - CHR D6                       - |13   20| -                         - |13   20| -                                                    
+   CHR D1  - |12   17| - CHR D5          CHR D1  - |14   19| - CHR D5                       - |14   19| -                         - |14   19| -                                                    
+   CHR D2  - |13   16| - CHR D4          CHR D2  - |15   18| - CHR D4                       - |15   18| -                         - |15   18| -                                                    
+   GND     - |14   15| - CHR D3          GND     - |16   17| - CHR D3                       - |16   17| -                         - |16   17| -                                                    
+              -------                               -------                                    -------                               -------                                                       
+              
+              
+references: http://wiki.nesdev.com/w/index.php/Bandai_FCG_board
+						http://seesaawiki.jp/famicomcartridge/d/Bandai%20FCG-1
+						http://unagi.osdn.jp/cgi-bin/hiki/hiki.cgi?FCG-3
+						http://blog.naver.com/PostView.nhn?blogId=xsnake&logNo=220357886147&categoryNo=29&parentCategoryNo=0&viewDate=&currentPage=2&postListTopCurrentPage=1&from=postView
+						http://blog.naver.com/PostView.nhn?blogId=xsnake&logNo=220311282542&categoryNo=29&parentCategoryNo=0&viewDate=&currentPage=2&postListTopCurrentPage=1&from=postView
