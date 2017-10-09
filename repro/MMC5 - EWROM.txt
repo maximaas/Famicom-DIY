@@ -1,0 +1,54 @@
+MMC5
+HVC-EWROM
+
+1024KBytes - AM29F080B				      PRG MASK ROM     				                    512KBytes as PRG                                   Famicom Cartridge Connector   
+--------------------------          -----------------------------------         ----------------------------------                 ----------------------------  
+                                                                                                                                                                 
+            ----_----                             ---_---                                      ----_----                                        +-------+            
+     A17 - |01     32| - Vcc           PRG A17 - |01   32| - +5V                            - |01     32| -                                 GND |01   31| +5V        
+     A18 - |02     31| - OE#           PRG A18 - |02   31| - PRG /OE                        - |02     31| -                             CPU A11 |02   32| CPU ¦Õ2 /M2
+     A15 - |03     30| - A19           PRG A15 - |03   30| - PRG A19                        - |03     30| -                             CPU A10 |03   33| CPU A12    
+     A12 - |04     29| - A14           PRG A12 - |04   29| - PRG A14                        - |04     29| -                              CPU A9 |04   34| CPU A13    
+     A7  - |05     28| - A13           PRG  A7 - |05   28| - PRG A13                        - |05     28| -                              CPU A8 |05   35| CPU A14    
+     A6  - |06     27| - A8            PRG  A6 - |06   27| - PRG A8                         - |06     27| -                              CPU A7 |06   36| CPU D7     
+     A5  - |07     26| - A9            PRG  A5 - |07   26| - PRG A9                         - |07     26| -                              CPU A6 |07   37| CPU D6     
+     A4  - |08     25| - A11           PRG  A4 - |08   25| - PRG A11                        - |08     25| -                              CPU A5 |08   38| CPU D5     
+     A3  - |09     24| - A16           PRG  A3 - |09   24| - PRG A16                        - |09     24| -                              CPU A4 |09   39| CPU D4     
+     A2  - |10     23| - A10           PRG  A2 - |10   23| - PRG A10                        - |10     23| -                              CPU A3 |10   40| CPU D3     
+     A1  - |11     22| - CHR           PRG  A1 - |11   22| - GND                            - |11     22| -                              CPU A2 |11   41| CPU D2     
+     A0  - |12     21| - D7            PRG  A0 - |12   21| - PRG D7                         - |12     21| -                              CPU A1 |12   42| CPU D1     
+     D0  - |13     20| - D6            PRG  D0 - |13   20| - PRG D6                         - |13     20| -                              CPU A0 |13   43| CPU D0     
+     D1  - |14     19| - D5            PRG  D1 - |14   19| - PRG D5                         - |14     19| -                            CPU R/W  |14   44| CPU /ROMCS 
+     D2  - |15     18| - D4            PRG  D2 - |15   18| - PRG D4                         - |15     18| -                            CPU /IRQ |15   45| SOUND IN   
+     Vss - |16     17| - D3                GND - |16   17| - PRG D3                         - |16     17| -                                 GND |16   46| SOUND OUT  
+            ---------                             -------                                      ---------                                PPU /RD |17   47| PPU /WR    
+            |   |   |                                                                          |   |   |                               VRAM A10 |18   48| VRAM /CS   
+            |   |   WE#                                                                        |   |   WE# - CONN 14pin                  PPU A6 |19   49| PPU /A13   
+            |   CE#           		                                                             |   CE# - CONN 44pin                      PPU A5 |20   50| PPU A7     
+            CHR                                                                                CHR                                       PPU A4 |21   51| PPU A8     
+                                                                                                                                         PPU A3 |22   52| PPU A9     
+                                      CHR MASK ROM 				                        512KBytes as CHR                                       PPU A2 |23   53| PPU A10    
+                                      -----------------------------------         ----------------------------------                     PPU A1 |24   54| PPU A11    
+                                                                                                                                         PPU A0 |25   55| PPU A12    
+                                                  ---_---                                      ----_----                                 PPU D0 |26   56| PPU A13    
+                                       CHR A17 - |01   32| - +5V                            - |01     32| -                              PPU D1 |27   57| PPU D7     
+                                       CHR A18 - |02   31| - PPU /RD (OE)                   - |02     31| -                              PPU D2 |28   58| PPU D6     
+                                       CHR A15 - |03   30| - CHR A19                        - |03     30| -                              PPU D3 |29   59| PPU D5     
+                                       CHR A12 - |04   29| - CHR A14                        - |04     29| -                                 +5V |30   60| PPU D4     
+                                       CHR  A7 - |05   28| - CHR A13                        - |05     28| -                                     +-------+            
+                                       CHR  A6 - |06   27| - CHR A8                         - |06     27| -                                                
+                                       CHR  A5 - |07   26| - CHR A9                         - |07     26| -                                               
+                                       CHR  A4 - |08   25| - CHR A11                        - |08     25| -                                               
+                                       CHR  A3 - |09   24| - CHR A16                        - |09     24| -
+                                       CHR  A2 - |10   23| - CHR A10                        - |10     23| -                                               
+                                       CHR  A1 - |11   22| - PPU A13 (CE)                   - |11     22| -                                               
+                                       CHR  A0 - |12   21| - CHR D7                         - |12     21| -                                               
+                                       CHR  D0 - |13   20| - CHR D6                         - |13     20| -                                               
+                                       CHR  D1 - |14   19| - CHR D5                         - |14     19| -                                               
+                                       CHR  D2 - |15   18| - CHR D4                         - |15     18| -           
+                                           GND - |16   17| - CHR D3                         - |16     17| -           
+                                                  -------                                      ---------            
+                                                                                               |   |   |               
+                                                                                               +---+   WE# - CONN 47pin
+                                                                                               |   CE#   
+                                                                                               CHR                   

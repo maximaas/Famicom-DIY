@@ -1,0 +1,161 @@
+board <- {
+	mappernum = 5,
+	cpu_rom = {
+		size_base = 4 * mega, size_max = 8 * mega,
+		banksize = 0x2000
+	},
+	cpu_ram = {
+		size_base = 0x2000, size_max = 0x8000,
+		banksize = 0x2000
+	},
+	ppu_rom = {
+		size_base = 4 * mega, size_max = 8 * mega,
+		banksize = 0x0800
+	},
+	ppu_ramfind = true, vram_mirrorfind = false
+};
+
+function cpu_dump(d, pagesize, banksize)
+{
+	local i;
+	cpu_write(d, 0x5100, 0);
+	for(i = 0x80; i < (pagesize | 0x80) - 2; i += 2){
+		cpu_write(d, 0x5114, i);
+		cpu_write(d, 0x5115, i | 1);
+		cpu_read(d, 0x8000, banksize * 2);
+	}
+	cpu_write(d, 0x5116, i);
+	cpu_write(d, 0x5117, 0xff);
+	cpu_read(d, 0xc000, banksize * 2);
+}
+
+function ppu_dump(d, pagesize, banksize)
+{
+	local i;
+	cpu_write(d, 0x5101, 2);
+	cpu_write(d, 0x5130, 0);
+	for(i = 0; (i < pagesize) && (i < 0x100); i += 4){
+		cpu_write(d, 0x5121, i);
+		cpu_write(d, 0x5123, i | 1);
+		cpu_write(d, 0x5125, i | 2);
+		cpu_write(d, 0x5127, i | 3);
+		ppu_read(d, 0x0000, banksize * 4);
+	}
+	cpu_write(d, 0x5130, 0x03);
+	for(; i < pagesize; i += 4){
+		local j = i & ff;
+		cpu_write(d, 0x5121, j);
+		cpu_write(d, 0x5123, j | 1);
+		cpu_write(d, 0x5125, j | 2);
+		cpu_write(d, 0x5127, j | 3);
+		ppu_read(d, 0x0000, banksize * 4);
+	}
+}
+
+/*
+CPU memory bank
+use 4bank mode ($6000- を除く)
+cpu address|rom address    |page|task
+$8000-$9fff|n * 0x2000     |n   |write area
+$a000-$bfff|0x02000-0x03fff|1   |write (0x2aaa & 0x1fff) + 0x8000
+$c000-$dfff|0x04000-0x05fff|2   |write (0x5555 & 0x1fff) + 0xa000
+$e000-$efff|未使用         |----|未使用
+コマンド用アドレス は RAM mode にしないと書き込みを受け付けない.
+$c000 を書き込みエリアにすると ($c1xx & $7fff) = $51xx のバンクレジス
+タが反応するらしい。よって $c000- はコマンドアドレスの使用に抑える。
+
+PPU memory bank
+use 4bank mode (MAX 4M)
+ppu address|rom address    |page|task
+$0000-$07ff|0x02800-0x02bff|0x0a|write (0x2aaa & 0x07ff) + 0
+$0800-$0fff|0x05400-0x057ff|0x15|write (0x5555 & 0x07ff) + 0x800
+$1000-$1fff|n * 0x0800     |n   |write area
+直接は関係ないが、PPU bank 数によってアクセスできる Charcter Memory の最値が異なる。
+8つ. 2M, $5101 == 3
+4つ. 4M, $5101 == 2
+2つ. 8M, $5101 == 1
+1つ. 16M, $5101 == 0
+*/
+function program_initalize(d, cpu_banksize, ppu_banksize)
+{
+	cpu_command(d, 0x0000, 0x8000, cpu_banksize);
+	cpu_command(d, 0x2aaa, 0xa000, cpu_banksize);
+	cpu_command(d, 0x5555, 0xc000, 0x4000);
+	cpu_write(d, 0x5100, 3);
+	cpu_write(d, 0x5113, 0);
+	cpu_write(d, 0x5114, 0x80);
+	cpu_write(d, 0x5115, 0x81);
+	cpu_write(d, 0x5116, 0x82);
+
+	ppu_command(d, 0x0000, 0x1000, ppu_banksize);
+	ppu_command(d, 0x2aaa, 0x0000, ppu_banksize);
+	ppu_command(d, 0x5555, 0x0800, ppu_banksize);
+	cpu_write(d, 0x5101, 2);
+	cpu_write(d, 0x5121, 5);
+	cpu_write(d, 0x5123, 0xa);
+	cpu_write(d, 0x5125, 0);
+	
+	cpu_write(d, 0x5104, 3);
+	cpu_write(d, 0x5105, 0);
+}
+
+function cpu_transfer(d, start, end, cpu_banksize)
+{
+	for(local i = start; i < end - 1; i += 1){
+		cpu_write(d, 0x5114, 0x80 | i);
+		cpu_program(d, 0x8000, cpu_banksize);
+	}
+	//$e000- は書き込みが安定しないので末尾 page として $7f を指定する。
+	cpu_write(d, 0x5114, 0x80  | 0x7f);
+	cpu_program(d, 0x8000, cpu_banksize);
+}
+
+/*
+using upper charcter memory address register (0x5130)
+this method can program A14-A0 device
+*/
+/*
+function ppu_transfer(d, start, end, banksize)
+{
+	local i;
+	cpu_write(d, 0x5130, 0);
+	for(i = start; (i < end) && (i < 0x100); i += 2){
+		cpu_write(d, 0x5125, i);
+		cpu_write(d, 0x5127, i | 1);
+		ppu_program(d, 0x1000, banksize * 2);
+	}
+	cpu_write(d, 0x5130, 0x03);
+	for(; i < end; i += 2){
+		cpu_write(d, 0x5125, (i & 0xff));
+		cpu_write(d, 0x5127, (i & 0xff) | 1);
+		ppu_program(d, 0x1000, banksize * 2);
+	}
+}
+*/
+
+/*
+changing charcter bank size method which is tricky.
+this method can program A10-A0 device only
+memory bank configuration for 0x80000-0xfffff
+ppu address|rom address    |page|task
+$0000-$0fff|0x80000-0x80fff|0x00|write 0x02aa, 0x0555
+$1000-$1fff|n * 0x1000     |n   |write area
+*/
+function ppu_transfer(d, start, end, ppu_banksize)
+{
+	local i;
+	for(i = start; (i < end) && (i < 0x100); i += 2){
+		cpu_write(d, 0x5125, i);
+		cpu_write(d, 0x5127, i | 1);
+		ppu_program(d, 0x1000, ppu_banksize * 2);
+	}
+	ppu_banksize *= 2;
+	cpu_write(d, 0x5101, 1);
+	ppu_command(d, 0x02aa, 0x0000, ppu_banksize);
+	ppu_command(d, 0x0555, 0x0000, ppu_banksize);
+	cpu_write(d, 0x5123, 0);
+	for(i; i < end; i += 2){
+		cpu_write(d, 0x5127, i >> 1);
+		ppu_program(d, 0x1000, ppu_banksize);
+	}
+}
