@@ -1,0 +1,82 @@
+Sunsoft-FME-7/Sunsoft-5B
+Mapper 69
+
+512KBytes - MX29F004  	    PRG MASK ROM                        512KBytes as PRG				                           6264 SRAM as WRAM               Famicom Cartridge Connector               Sunsoft FME-7 (and Sunsoft 5B): 44-pin TQFP
+-----------------------     -------------------------------     ----------------------------------                 ----------------------------    ----------------------------              -------------------------------------------
+
+        ---_---                                                              ---_---                                     ---_---                           +-------+                                                    / \
+ A18 - |01   32| - Vdd                                          multicart - |01   32| - PRG 28pin                  NC - |01   28| -  +5v               GND |01   31| +5V                                               / O \
+ A16 - |02   31| - WE#                 ---_---                  PRG 22pin - |02   31| - 5B 9pin/CONN 14pin            - |02   27| - 5B 9pin        CPU A11 |02   32| CPU ¦Õ2 /M2                       (nrw) CPU D3 -> /01 44\ <- CPU D2 (nrw)
+ A15 - |03   30| - A17      PRG A15 - |01   28| - +5v                     - |03   30| - 5B 32pin                      - |03   26| - 5B 29pin       CPU A10 |03   33| CPU A12                                  varies /02   43\ <- CPU D4 (nrw)
+ A12 - |04   29| - A14      PRG A12 - |02   27| - PRG A14                 - |04   29| -                               - |04   25| -                 CPU A9 |04   34| CPU A13                              varies <- /03     42\ <- CPU D1 (nrw)
+ A7  - |05   28| - A13      PRG A7  - |03   26| - PRG A13                 - |05   28| -                               - |05   24| -                 CPU A8 |05   35| CPU A14                             (n) M2 -> /04       41\ <- CPU D5 (nrw)
+ A6  - |06   27| - A8       PRG A6  - |04   25| - PRG A8                  - |06   27| -                               - |06   23| -                 CPU A7 |06   36| CPU D7                        (n) CPU A13 -> /05         40\ <- CPU D0 (nrw)
+ A5  - |07   26| - A9       PRG A5  - |05   24| - PRG A9                  - |07   26| -                               - |07   22| - GND             CPU A6 |07   37| CPU D6                               GND -- /06           39\ -- +5V
+ A4  - |08   25| - A11      PRG A4  - |06   23| - PRG A11                 - |08   25| -                               - |08   21| -                 CPU A5 |08   38| CPU D5                      (n) CPU A14 -> /07             38\ <- CPU D6 (nrw)
+ A3  - |09   24| - OE#      PRG A3  - |07   22| - PRG A16                 - |09   24| - PRG 20pin                     - |09   20| - 5B 30pin        CPU A4 |09   39| CPU D4                     (n) /ROMSEL -> /08               37\ <- CPU D7 (nrw)
+ A2  - |10   23| - A10      PRG A2  - |08   21| - PRG A10                 - |10   23| -                               - |10   19| -                 CPU A3 |10   40| CPU D3                  (nrw) CPU R/W -> /09                 36\ -> PRG A13 (r)
+ A1  - |11   22| - CE#      PRG A1  - |09   20| - PRG /CE                 - |11   22| - --------5B 8pin/CONN 44pin    - |11   18| -                 CPU A2 |11   41| CPU D2                      (n) /IRQ <- /10                   35\ -> PRG A16 (r)
+ A0  - |12   21| - D7       PRG A0  - |10   19| - PRG D7                  - |12   21| -       \---GND                 - |12   17| -                 CPU A1 |12   42| CPU D1                  (n) PPU /RD -> /11                     34\ -> PRG A14 (r)
+ D0  - |13   20| - D6       PRG D0  - |11   18| - PRG D6                  - |13   20| -       [switch]                - |13   16| -                 CPU A0 |13   43| CPU D0                  (n) PPU A10 -> \12                     33/ -> PRG A15 (r)
+ D1  - |14   19| - D5       PRG D1  - |12   17| - PRG D5                  - |14   19| -                               - |14   15| -               CPU R/W  |14   44| CPU /ROMCS               (n) PPU A11 -> \13                   32/ -> PRG A17 (r)
+ D2  - |15   18| - D4       PRG D2  - |13   16| - PRG D4                  - |15   18| -                                  -------                  CPU /IRQ |15   45| SOUND IN                  (n) PPU A12 -> \14                 31/ -> PRG /CE (r)
+ Vss - |16   17| - D3       GND     - |14   15| - PRG D3                  - |16   17| -                                                                GND |16   46| SOUND OUT                  (n) PPU A13 -> \15               30/ -> PRG RAM /CE (w)
+        -------                        -------                               -------                                                               PPU /RD |17   47| PPU /WR                     (r) CHR /CE <- \16             29/ -> PRG RAM +CE (w)
+                                                                                                                                                  VRAM A10 |18   48| VRAM /CS                             +5V -- \17           28/ -- GND
+                                                                                                                                                    PPU A6 |19   49| PPU /A13                               NC <- \18         27/ varies
+64KBytes - KM6264BL-10L	    CHR MASK ROM                        512KBytes as CHR                                                                    PPU A5 |20   50| PPU A7                  (nr) CHR/CIRAM A10 <- \19       26/ -> CHR A17 (r)
+-----------------------     -------------------------------     ----------------------------------                                                  PPU A4 |21   51| PPU A8                          (r) CHR A16 <- \20     25/ -> CHR A15 (r)
+                                                                                                                                                    PPU A3 |22   52| PPU A9                           (r) CHR A11 <- \21   24/ -> CHR A14 (r)
+        ---_---                         ---_---                               ---_---                                                               PPU A2 |23   53| PPU A10                           (r) CHR A13 <- \22 23/ -> CHR A12 (r)
+ NC  - |01   28| - Vcc             ? - |01   32| - +5V           multicart - |01   32| -                                                            PPU A1 |24   54| PPU A11                                           \   /
+ A12 - |02   27| - WE#       CHR A16 - |02   31| - GND                     - |02   31| - CONN 47pin                                                 PPU A0 |25   55| PPU A12                                            \ /
+ A7  - |03   26| - CS2       CHR A15 - |03   30| - CHR A17                 - |03   30| -                                                            PPU D0 |26   56| PPU A13                 pin 2: Amplifier in (5B) or ?PRG A18 out (FME-7)?
+ A6  - |04   25| - A8        CHR A12 - |04   29| - CHR A14                 - |04   29| -                                                            PPU D1 |27   57| PPU D7                  pin 3: Amplifier out (5B)
+ A5  - |05   24| - A9        CHR A7  - |05   28| - CHR A13                 - |05   28| -                                                            PPU D2 |28   58| PPU D6                  pin 27: Audio out (5B) or +5V (FME-7)
+ A4  - |06   23| - A11       CHR A6  - |06   27| - CHR A8                  - |06   27| -                                                            PPU D3 |29   59| PPU D5
+ A3  - |07   22| - OE#       CHR A5  - |07   26| - CHR A9                  - |07   26| -                                                               +5V |30   60| PPU D4
+ A2  - |08   21| - A10       CHR A4  - |08   25| - CHR A11                 - |08   25| -                                                                   +-------+
+ A1  - |09   20| - CS1       CHR A3  - |09   24| - CHR /CE                 - |09   24| - 5B 11pin / PPU /RD(OE)
+ A0  - |10   19| - D7        CHR A2  - |10   23| - CHR A10                 - |10   23| -
+ D0  - |11   18| - D6        CHR A1  - |11   22| - GND                     - |11   22| - 5B 15pin / PPU A13(CE)
+ D1  - |12   17| - D5        CHR A0  - |12   21| - CHR D7                  - |12   21| -
+ D2  - |13   16| - D4        CHR D0  - |13   20| - CHR D6                  - |13   20| -
+ GND - |14   15| - D3        CHR D1  - |14   19| - CHR D5                  - |14   19| -
+        -------              CHR D2  - |15   18| - CHR D4                  - |15   18| -
+                             GND     - |16   17| - CHR D3                  - |16   17| -
+                                        -------                               -------
+
+
+AY-38910                                                           AY-3-8910 as Sound Chip                          74HC139                              74HC74
+---------------------------------                                  -------------------------------------            ----------------------------         ------------------------------
+                                                                     +--1k--------------------------+
+             ---_---                                                 |       GND                    |               +------------------------------+
+      GND - |01   40| - Vcc                                          |       |     ---_---          |               |        ---_---               |                        ---_---
+       NC - |02   39| - Test 1                                       |--3k---+- - |01   40| - +5V   |               | GND - |01   16| - +5V        |                 +5v - |01   14| - +5V
+Channel B - |03   38| - Channel C                                    |          - |02   39| -       |               +---- - |02   15| - CONN 44pin |     +-------------- - |02   13| - +5v
+Channel A - |04   37| - DA0                                  10uf+   +--1k----- - |03   38| - ------+               +---- - |03   14| - CONN 35pin |     |       CONN M2 - |03   12| -
+       NC - |05   36| - DA1                 CONN 45/46pin---+---||---+--1k----- - |04   37| - PRG D0                      - |04   13| - 5B 9pin    |     |               - |04   11| -
+    IO B7 - |06   35| - DA2                                                     - |05   36| - PRG D1                      - |05   12| -            |     | (B)8910 22pin - |05   10| -
+    IO B6 - |07   34| - DA3                                                     - |06   35| - PRG D2                      - |06   11| - -----------+     +-------------  - |06   09| -
+    IO B5 - |08   33| - DA4                                                     - |07   34| - PRG D3        (A)8910 27pin - |07   10| -                              GND - |07   08| -
+    IO B4 - |09   32| - DA5                                                     - |08   33| - PRG D4                  GND - |08   09| -                                     -------
+    IO B3 - |10   31| - DA6                                                     - |09   32| - PRG D5                         -------
+    IO B2 - |11   30| - DA7                                                     - |10   31| - PRG D6
+    IO B1 - |12   29| - BC1                                                     - |11   30| - PRG D7
+    IO B0 - |13   28| - BC2                                                     - |12   29| - GND
+    IO A7 - |14   27| - BDIR                                                    - |13   28| - CONN 34pin
+    IO A6 - |15   26| - Test 2                                                  - |14   27| - (A)
+    IO A5 - |16   25| - A8                                                      - |15   26| - GND
+    IO A4 - |17   24| - A9                                                      - |16   25| - +5v
+    IO A3 - |18   23| - RESET                                                   - |17   24| - GND
+    IO A2 - |19   22| - CLOCK                                                   - |18   23| - ---------+--->|---+5v
+    IO A1 - |20   21| - IO A0                                                   - |19   22| - (B)      |   1n4148
+     				 -------                                                            - |20   21| -          |
+     				                                                                       -------             = 105
+                                                                                                       |
+                                                                                                       GND
+
+references: http://blog.naver.com/PostView.nhn?blogId=xsnake&logNo=220336838247
+						https://jensma.de/nesrepro/gimmick
+						https://www.youtube.com/watch?v=BWmK5tqEgks
+						http://forums.nesdev.com/viewtopic.php?t=3480
