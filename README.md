@@ -42,10 +42,3 @@ Refer to [https://maximaas.github.io/blog](https://maximaas.github.io/blog) for 
 *   MMC5 - ETROM.txt: wiring instruction for mmc5 etrom.
 *   Namcot-163.txt: wiring instruction for Namcot-163 board.
 *   Taito X1-005.txt: wiring instruction for Taito X1-005 board.
-
-## Stickers
-
-*   Just Breed: front and back sticker.
-*   霸王的大陆: front and back sticker.
-*   不动明王传: front sticker.
-
